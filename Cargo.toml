@@ -1,0 +1,10 @@
+[package]
+name = "RustPT"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+derive-new = "0.7.0"
+glam = "0.29.2"
+minifb = "0.27.0"
+rayon = "1.8.0"
