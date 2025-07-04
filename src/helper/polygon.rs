@@ -1,4 +1,4 @@
-use glam::Vec3;
+use glam::{Vec2, Vec3};
 
 use crate::helper::ARGB4_to_ARGBu32;
 use crate::ray::{ Ray, IntersectionResult };
@@ -7,6 +7,7 @@ use crate::screen::ScreenBuffersPixel;
 #[derive(Clone, Debug)]
 pub struct Vertex {
     pub pos: Vec3,
+    pub uv: Vec2,
 }
 
 #[derive(Clone, Debug)]
@@ -48,9 +49,16 @@ impl Triangle {
             if t < unsafe { *pixel_pointer }.alpha {
                 unsafe { (*pixel_pointer).alpha = t };
                 let multiplier = 1000.0;
-                let r = f32::clamp(intersection.uv.x*multiplier, 0.0, 255.0) as u8;
-                let g = f32::clamp(intersection.uv.y*multiplier, 0.0, 255.0) as u8;
-                let b = f32::clamp(intersection.uv.z*multiplier, 0.0, 255.0) as u8;
+
+                let w = 1.-u-v;
+                let texU = (w*self.verticies[0].uv[0] + u*self.verticies[1].uv[0] + v*self.verticies[2].uv[0]).rem_euclid(255.);
+                let texV = (w*self.verticies[0].uv[1] + u*self.verticies[1].uv[1] + v*self.verticies[2].uv[1]).rem_euclid(255.);
+                let r = f32::clamp(texU*255., 0.0, 255.0) as u8;
+                let g = f32::clamp(texV*255., 0.0, 255.0) as u8;
+                let b = f32::clamp(255., 0.0, 255.0) as u8;
+                // let r = f32::clamp(intersection.uv.x*multiplier, 0.0, 255.0) as u8;
+                // let g = f32::clamp(intersection.uv.y*multiplier, 0.0, 255.0) as u8;
+                // let b = f32::clamp(intersection.uv.z*multiplier, 0.0, 255.0) as u8;
                 // unsafe { (*pixel_pointer).rendered = ARGB4_to_ARGBu32(0xFF, 0xFF, 0xFF, 0xFF) };
                 unsafe { (*pixel_pointer).rendered = ARGB4_to_ARGBu32(0xFF, r, g, b) };
                 return Some(intersection);

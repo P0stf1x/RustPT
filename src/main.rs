@@ -4,7 +4,7 @@
 
 use minifb::{Key, Window, WindowOptions};
 
-use glam::Vec3;
+use glam::{Vec2, Vec3};
 
 pub const WIDTH:  usize = 512;
 pub const HEIGHT: usize = 288;
@@ -44,15 +44,21 @@ fn main() {
 
     let screen = ScreenBuffers::new(WIDTH, HEIGHT);
 
-    let tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(-1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}]};
-    let reference_tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0)}]};
+    let tri = Triangle{
+        verticies: [
+            Vertex{pos: Vec3::new(0.0, 1.0, 0.0),  uv: Vec2::new(0.0, 1.0)},
+            Vertex{pos: Vec3::new(-1.0, 0.0, 0.0), uv: Vec2::new(-1.0, 0.0)},
+            Vertex{pos: Vec3::new(0.0, 0.0, 0.0),  uv: Vec2::new(0.0, 0.0)}
+        ]
+    };
+    // let reference_tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0)}]};
 
     let mut ref_obj = Object {
         origin: Vec3::new(0.0, 0.0, -100.0),
         rotation: Vec3::new(0.0, 0.0, 0.0),
         triangles: vec![],
     };
-    ref_obj.append_triangle(reference_tri);
+    // ref_obj.append_triangle(reference_tri);
     
     let mut obj = Object {
         origin: Vec3::new(-0.0, 0.0, 0.0),
@@ -61,38 +67,38 @@ fn main() {
     };
     obj.append_triangle(tri);
 
-    let tri1 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}]};
-    let tri2 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}]};
+    let tri1 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0), uv: Vec2::new(0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0), uv: Vec2::new(0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0), uv: Vec2::new(1.0, 0.0)}]};
+    let tri2 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0), uv: Vec2::new(0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0), uv: Vec2::new(1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0), uv: Vec2::new(1.0, 1.0)}]};
     
-    let tri3 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
-    let tri4 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
+    // let tri3 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
+    // let tri4 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
     
-    let tri5 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}]};
-    let tri6 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
+    // let tri5 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}]};
+    // let tri6 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
     
-    let tri7 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}]};
-    let tri8 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
+    // let tri7 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}]};
+    // let tri8 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
     
-    let tri9 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}]};
-    let tri10 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
+    // let tri9 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}]};
+    // let tri10 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
     
-    let tri11 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
-    let tri12 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
+    // let tri11 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
+    // let tri12 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
     
     // let mut cube = Object{origin: Arc::new(RwLock::new(Vec3::new(0.0, 0.0, 0.0))), rotation: Vec3::ZERO, triangles: vec![]};
     let mut cube = Object{origin: Vec3::ZERO, rotation: Vec3::ZERO, triangles: vec![]};
     cube.append_triangle(tri1);
     cube.append_triangle(tri2);
-    cube.append_triangle(tri3);
-    cube.append_triangle(tri4);
-    cube.append_triangle(tri5);
-    cube.append_triangle(tri6);
-    cube.append_triangle(tri7);
-    cube.append_triangle(tri8);
-    cube.append_triangle(tri9);
-    cube.append_triangle(tri10);
-    cube.append_triangle(tri11);
-    cube.append_triangle(tri12);
+    // cube.append_triangle(tri3);
+    // cube.append_triangle(tri4);
+    // cube.append_triangle(tri5);
+    // cube.append_triangle(tri6);
+    // cube.append_triangle(tri7);
+    // cube.append_triangle(tri8);
+    // cube.append_triangle(tri9);
+    // cube.append_triangle(tri10);
+    // cube.append_triangle(tri11);
+    // cube.append_triangle(tri12);
 
     let mut scene = Scene {
         screen: screen,
