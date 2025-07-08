@@ -4,6 +4,7 @@ pub mod ray;
 pub mod screen;
 pub mod camera;
 pub mod scene;
+pub mod texture;
 
 #[inline]
 pub fn ARGB4_to_ARGBu32(a: u8, r: u8, g: u8, b: u8) -> u32 {
