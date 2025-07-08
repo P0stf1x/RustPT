@@ -13,7 +13,9 @@ pub struct Texture {
 impl Texture {
     pub fn new(x: usize, y: usize) -> Texture {
         let mut empty_vector = Vec::with_capacity(x*y);
-        empty_vector.fill_with( || { RwLock::new(Pixel::new()) } );
+        for _ in 0..(x*y) {
+            empty_vector.push(RwLock::new(Pixel::new()));
+        }
         Texture { size_x: x, size_y: y, data: empty_vector }
     }
 
