@@ -37,7 +37,7 @@ impl Camera {
         });
     }
 
-    fn generate_ray(&self, offset: Vec2) -> Ray {
+    pub fn generate_ray(&self, offset: Vec2) -> Ray {
         if !self.orthographic {
             self.generate_ray_perspective(offset)
         } else {

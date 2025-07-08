@@ -12,6 +12,7 @@ pub const HEIGHT: usize = 288;
 pub const ASPECT_RATIO: f32 = WIDTH as f32 / HEIGHT as f32;
 
 mod helper;
+use crate::texture::Texture;
 use crate::helper::*;
 use crate::object::Object;
 use crate::screen::ScreenBuffers;
@@ -109,6 +110,8 @@ fn main() {
     let mut frames_rendered = 0;
     let mut now = std::time::Instant::now();
     let mut show_depth_buffer = false;
+    let temp_cam = Camera::new(Vec3::new(0.0, 0.0, 2.0), Vec3::ZERO);
+    let temp_tex = Texture::new(WIDTH, HEIGHT);
     while window.is_open() && !window.is_key_down(Key::Escape) {
 
         scene.screen.clear();
@@ -145,6 +148,7 @@ fn main() {
             // Misc controls
             if window.is_key_pressed(Key::P, minifb::KeyRepeat::No) { scene.camera.orthographic = !scene.camera.orthographic }
             if window.is_key_pressed(Key::B, minifb::KeyRepeat::No) { show_depth_buffer = !show_depth_buffer }
+            if window.is_key_pressed(Key::R, minifb::KeyRepeat::No) { scene.render_to_texture(&temp_cam, &temp_tex); temp_tex.save_to_file(); }
 
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         if !show_depth_buffer {
