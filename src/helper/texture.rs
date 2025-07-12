@@ -1,6 +1,8 @@
 pub mod pixel;
 
 use std::sync::RwLock;
+use std::io::Write;
+use std::slice::Iter;
 
 use pixel::Pixel;
 
@@ -40,5 +42,29 @@ impl Texture {
         let pixel_x = (x * (self.size_x as f32)).floor().rem_euclid(self.size_x as f32) as usize;
         let pixel_y = (y * -(self.size_y as f32)).floor().rem_euclid(self.size_y as f32) as usize; // since V is positive upwards and Y is positive downwards we need to multiply by negative
         return self.get_pixel(pixel_x, pixel_y);
+    }
+
+    pub fn get_pixel_iterator(&self) -> Iter<RwLock<Pixel>> {
+        return self.data.iter();
+    }
+
+    pub fn size_x(&self) -> usize {
+        return self.size_x;
+    }
+
+    pub fn size_y(&self) -> usize {
+        return self.size_y;
+    }
+
+    pub fn save_to_file(&self) {
+        use std::fs::File;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+        let mut file = File::create(format!("{now}.ppm")).unwrap();
+        file.write_all(format!("P3\n{} {}\n255\n", self.size_x, self.size_y).as_bytes()).unwrap();
+        for pix in self.get_pixel_iterator() {
+            let unwrapped = pix.read().unwrap();
+            file.write_all(format!("{} {} {}\n", unwrapped.r(), unwrapped.g(), unwrapped.b()).as_bytes()).unwrap();
+        };
     }
 }
