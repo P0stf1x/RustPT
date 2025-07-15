@@ -11,6 +11,9 @@ pub const HEIGHT: usize = 288;
 
 pub const ASPECT_RATIO: f32 = WIDTH as f32 / HEIGHT as f32;
 
+mod importer;
+use importer::Importer;
+
 mod helper;
 use crate::texture::Texture;
 use crate::helper::*;
@@ -52,58 +55,26 @@ fn main() {
             Vertex{pos: Vec3::new(0.0, 0.0, 0.0),  uv: Vec2::new(0.0, 0.0)}
         ]
     };
-    // let reference_tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0)}]};
+    let reference_tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0), uv: Vec2::new(0.0, 100.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0), uv: Vec2::new(0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0), uv: Vec2::new(100.0, 0.0)}]};
 
-    let mut ref_obj = Object {
-        origin: Vec3::new(0.0, 0.0, -100.0),
-        rotation: Vec3::new(0.0, 0.0, 0.0),
-        triangles: vec![],
-    };
-    // ref_obj.append_triangle(reference_tri);
+    let mut ref_obj = Object::new(vec![reference_tri]);
+    ref_obj.origin = Vec3::new(0., 0., -100.);
     
-    let mut obj = Object {
-        origin: Vec3::new(-0.0, 0.0, 0.0),
-        rotation: Vec3::new(0.0, 0.0, 0.0),
-        triangles: vec![],
-    };
-    obj.append_triangle(tri);
+    let obj = Object::new(vec![tri]);
 
-    let tri1 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0), uv: Vec2::new(0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0), uv: Vec2::new(0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0), uv: Vec2::new(1.0, 0.0)}]};
-    let tri2 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0), uv: Vec2::new(0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0), uv: Vec2::new(1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0), uv: Vec2::new(1.0, 1.0)}]};
-    
-    // let tri3 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
-    // let tri4 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
-    
-    // let tri5 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}]};
-    // let tri6 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
-    
-    // let tri7 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}]};
-    // let tri8 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
-    
-    // let tri9 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}]};
-    // let tri10 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 0.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 0.0, 1.0)}]};
-    
-    // let tri11 = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}]};
-    // let tri12 = Triangle{verticies: [Vertex{pos: Vec3::new(1.0, 1.0, 0.0)}, Vertex{pos: Vec3::new(0.0, 1.0, 1.0)}, Vertex{pos: Vec3::new(1.0, 1.0, 1.0)}]};
-    
-    // let mut cube = Object{origin: Arc::new(RwLock::new(Vec3::new(0.0, 0.0, 0.0))), rotation: Vec3::ZERO, triangles: vec![]};
-    let mut cube = Object{origin: Vec3::ZERO, rotation: Vec3::ZERO, triangles: vec![]};
-    cube.append_triangle(tri1);
-    cube.append_triangle(tri2);
-    // cube.append_triangle(tri3);
-    // cube.append_triangle(tri4);
-    // cube.append_triangle(tri5);
-    // cube.append_triangle(tri6);
-    // cube.append_triangle(tri7);
-    // cube.append_triangle(tri8);
-    // cube.append_triangle(tri9);
-    // cube.append_triangle(tri10);
-    // cube.append_triangle(tri11);
-    // cube.append_triangle(tri12);
+    let cube = Importer::obj("test/cube.obj");
+
+    let mut teapot = Importer::obj("test/teapot_632tri.obj");
+    teapot.origin = Vec3::new(10., 0., 0.);
 
     let mut scene = Scene {
         screen: screen,
-        objects: vec![obj, ref_obj, cube],
+        objects: vec![
+            obj,
+            ref_obj,
+            cube,
+            teapot
+        ],
         camera: {Camera::new(Vec3::new(0.0, 0.0, 2.0), Vec3::ZERO)},
     };
 
