@@ -1,8 +1,10 @@
 use glam::Vec3;
 
+use crate::polygon::Vertex;
 use crate::polygon::Triangle;
 use crate::ray::{ Ray, IntersectionResult };
 use crate::screen::ScreenBuffersPixel;
+use crate::aabb::AABB;
 // use super::*;
 
 #[derive(Debug)]
@@ -11,20 +13,23 @@ pub struct Object {
     #[allow(dead_code)] // will be used in future
     pub rotation: Vec3,
     pub triangles: Vec<Triangle>,
-    pub aabb_min: Vec3,
-    pub aabb_max: Vec3,
+    pub aabb: AABB,
 }
 
 impl Object {
     pub fn new(triangles: Vec<Triangle>) -> Self {
+        let verticies: Vec<&Vertex> = triangles.iter().flat_map(|tri| {
+                    tri.verticies.iter().map(|vertex| {
+                        vertex
+                    })
+                }).collect();
+        let aabb = AABB::new(verticies);
         let mut obj = Object {
             origin: Vec3::new(0., 0., 0.),
             rotation: Vec3::new(0., 0., 0.,),
             triangles,
-            aabb_min: Vec3::new(0., 0., 0.),
-            aabb_max: Vec3::new(0., 0., 0.)
+            aabb,
         };
-        obj.calculate_aabb();
         return obj;
     }
 
@@ -49,23 +54,6 @@ impl Object {
         return closest_intersection;
     }
 
-    pub fn calculate_aabb(&mut self) {
-        let mut minimum = Vec3::new(f32::INFINITY, f32::INFINITY, f32::INFINITY);
-        self.triangles.iter().for_each(|triangle| {
-            triangle.verticies.iter().for_each(|vertex| {
-                minimum = minimum.min(vertex.pos);
-            });
-        });
-        self.aabb_min = minimum;
-        let mut maximum = Vec3::new(f32::NEG_INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY);
-        self.triangles.iter().for_each(|triangle| {
-            triangle.verticies.iter().for_each(|vertex| {
-                maximum = maximum.max(vertex.pos);
-            });
-        });
-        self.aabb_max = maximum;
-    }
-
     pub fn ray_aabb(&self, ray: &Ray) -> bool {
         // TODO: This should be additionally translated when object could be rotated
 
@@ -75,8 +63,8 @@ impl Object {
             1.0 / ray.direction.z,
         );
 
-        let t0 = (self.aabb_min - ray.origin + self.origin) * inv_d;
-        let t1 = (self.aabb_max - ray.origin + self.origin) * inv_d;
+        let t0 = (self.aabb.min - ray.origin + self.origin) * inv_d;
+        let t1 = (self.aabb.max - ray.origin + self.origin) * inv_d;
 
         let tmin = t0.min(t1);
         let tmax = t0.max(t1);
