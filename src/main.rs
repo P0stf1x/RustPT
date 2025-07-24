@@ -49,13 +49,13 @@ fn main() {
     let screen = ScreenBuffers::new(WIDTH, HEIGHT);
 
     let tri = Triangle{
-        verticies: [
+        vertices: [
             Vertex{pos: Vec3::new(0.0, 1.0, 0.0),  uv: Vec2::new(0.0, 1.0)},
             Vertex{pos: Vec3::new(-1.0, 0.0, 0.0), uv: Vec2::new(-1.0, 0.0)},
             Vertex{pos: Vec3::new(0.0, 0.0, 0.0),  uv: Vec2::new(0.0, 0.0)}
         ]
     };
-    let reference_tri = Triangle{verticies: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0), uv: Vec2::new(0.0, 100.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0), uv: Vec2::new(0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0), uv: Vec2::new(100.0, 0.0)}]};
+    let reference_tri = Triangle{vertices: [Vertex{pos: Vec3::new(0.0, 100.0, 0.0), uv: Vec2::new(0.0, 100.0)}, Vertex{pos: Vec3::new(0.0, 0.0, 0.0), uv: Vec2::new(0.0, 0.0)}, Vertex{pos: Vec3::new(100.0, 0.0, 0.0), uv: Vec2::new(100.0, 0.0)}]};
 
     let mut ref_obj = Object::new(vec![reference_tri]);
     ref_obj.origin = Vec3::new(0., 0., -100.);
@@ -64,8 +64,12 @@ fn main() {
 
     let cube = Importer::obj("test/cube.obj");
 
-    let mut teapot = Importer::obj("test/teapot_632tri.obj");
+    let mut teapot = Importer::obj("test/teapot_6320tri.obj");
     teapot.origin = Vec3::new(10., 0., 0.);
+    println!("Total BVH leaves: {}", teapot.debug_get_bvh_end(teapot.bvh.clone()).len());
+    teapot.debug_count_repeated_triangles();
+    // let tris22 = cube.triangles.iter().collect();
+    // BVH::generate_bottom(&tris22);
 
     let mut scene = Scene {
         screen: screen,
@@ -75,7 +79,7 @@ fn main() {
             cube,
             teapot
         ],
-        camera: {Camera::new(Vec3::new(0.0, 0.0, 2.0), Vec3::ZERO)},
+        camera: {Camera::new(Vec3::new(0.0, 1.0, 2.0), Vec3::new(-80., 0., 0.))},
     };
 
     let mut frames_rendered = 0;

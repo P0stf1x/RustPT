@@ -12,7 +12,7 @@ impl Importer {
 
         let reader = BufReader::new(File::open(file_path).expect(format!("Cannot open {}", file_path).as_str()));
 
-        let mut verticies: Vec<Vertex> = Vec::new();
+        let mut vertices: Vec<Vertex> = Vec::new();
         let mut faces: Vec<Triangle> = Vec::new();
 
         'line: for line in reader.lines() {
@@ -23,8 +23,8 @@ impl Importer {
             match operation {
                 "#" => { println!("Comment: '{:?}'", words); continue 'line; },
                 "v" => {
-                    assert_eq!(words.len(), 3, "Non 3D verticies are unsupported");
-                    verticies.push(Vertex {
+                    assert_eq!(words.len(), 3, "Non 3D vertices are unsupported");
+                    vertices.push(Vertex {
                         pos: Vec3::new(
                             words[0].parse::<f32>().unwrap(),
                             words[1].parse::<f32>().unwrap(),
@@ -35,15 +35,16 @@ impl Importer {
                 },
                 "f" => {
                     assert_eq!(words.len(), 3, "Non triangulated faces are unsupported");
-                    faces.push(Triangle { verticies: [
-                        verticies[words[0].parse::<usize>().unwrap() - 1].clone(),
-                        verticies[words[1].parse::<usize>().unwrap() - 1].clone(),
-                        verticies[words[2].parse::<usize>().unwrap() - 1].clone(),
+                    faces.push(Triangle { vertices: [
+                        vertices[words[0].parse::<usize>().unwrap() - 1].clone(),
+                        vertices[words[1].parse::<usize>().unwrap() - 1].clone(),
+                        vertices[words[2].parse::<usize>().unwrap() - 1].clone(),
                     ] });
                 }
                 _ => { println!("Unknown operation '{}'", operation); continue 'line; },
             }
         }
+        println!("Imported Faces: {}", faces.len());
 
         let object = Object::new(faces);
         return object;

@@ -3,8 +3,9 @@ use glam::Vec3;
 pub mod bvh;
 
 use crate::polygon::Vertex;
+use crate::polygon::Triangle;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct AABB {
     pub min: Vec3,
     pub max: Vec3,
@@ -18,15 +19,15 @@ impl AABB {
         }
     }
 
-    pub fn new(vertecies: Vec<&Vertex>) -> Self {
+    pub fn new(vertices: Vec<&Vertex>) -> Self {
         let mut min = Vec3::new(f32::INFINITY, f32::INFINITY, f32::INFINITY);
         let mut max = Vec3::new(f32::NEG_INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY);
 
-        vertecies.iter().for_each(|vertex| {
+        vertices.iter().for_each(|vertex| {
             min = min.min(vertex.pos);
         });
 
-        vertecies.iter().for_each(|vertex| {
+        vertices.iter().for_each(|vertex| {
             max = max.max(vertex.pos);
         });
 
@@ -34,6 +35,15 @@ impl AABB {
             min,
             max,
         }
+    }
+
+    pub fn new_from_tri(triangles: &Vec<Triangle>) -> Self {
+        let vertices: Vec<&Vertex> = triangles.iter().flat_map(|tri| {
+            tri.vertices.iter().map(|vertex| {
+                vertex
+            })
+        }).collect();
+        Self::new(vertices)
     }
 
     pub fn expand(&self, other: &Self) -> Self {

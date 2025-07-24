@@ -12,14 +12,14 @@ pub struct Vertex {
 
 #[derive(Clone, Debug)]
 pub struct Triangle {
-    pub verticies: [Vertex; 3],
+    pub vertices: [Vertex; 3],
 }
 
 impl Triangle {
     pub fn intersects_ray(&self, origin: &Vec3, ray: &Ray, pixel_pointer: *mut ScreenBuffersPixel) -> Option<IntersectionResult> {
         let epsilon = f32::EPSILON;
-        let edge1 = (origin+self.verticies[1].pos) - (origin+self.verticies[0].pos);
-        let edge2 = (origin+self.verticies[2].pos) - (origin+self.verticies[0].pos);
+        let edge1 = (origin+self.vertices[1].pos) - (origin+self.vertices[0].pos);
+        let edge2 = (origin+self.vertices[2].pos) - (origin+self.vertices[0].pos);
         let h = ray.direction.cross(edge2);
         let a = edge1.dot(h);
 
@@ -28,7 +28,7 @@ impl Triangle {
         }
 
         let f = 1.0 / a;
-        let s = ray.origin - (origin+self.verticies[0].pos);
+        let s = ray.origin - (origin+self.vertices[0].pos);
         let u = f * s.dot(h);
 
         if u < 0.0 || u > 1.0 {
@@ -48,18 +48,19 @@ impl Triangle {
             let intersection = IntersectionResult { distance: t, uv: ray.origin + ray.direction * t };
             if t < unsafe { *pixel_pointer }.alpha {
                 unsafe { (*pixel_pointer).alpha = t };
-                let multiplier = 1000.0;
 
                 let w = 1.-u-v;
-                let texU = (w*self.verticies[0].uv[0] + u*self.verticies[1].uv[0] + v*self.verticies[2].uv[0]).rem_euclid(255.);
-                let texV = (w*self.verticies[0].uv[1] + u*self.verticies[1].uv[1] + v*self.verticies[2].uv[1]).rem_euclid(255.);
-                let r = f32::clamp(texU*255., 0.0, 255.0) as u8;
-                let g = f32::clamp(texV*255., 0.0, 255.0) as u8;
-                let b = f32::clamp(255., 0.0, 255.0) as u8;
-                // let r = f32::clamp(intersection.uv.x*multiplier, 0.0, 255.0) as u8;
-                // let g = f32::clamp(intersection.uv.y*multiplier, 0.0, 255.0) as u8;
-                // let b = f32::clamp(intersection.uv.z*multiplier, 0.0, 255.0) as u8;
-                // unsafe { (*pixel_pointer).rendered = ARGB4_to_ARGBu32(0xFF, 0xFF, 0xFF, 0xFF) };
+                let texU = (w*self.vertices[0].uv[0] + u*self.vertices[1].uv[0] + v*self.vertices[2].uv[0]).rem_euclid(255.);
+                let texV = (w*self.vertices[0].uv[1] + u*self.vertices[1].uv[1] + v*self.vertices[2].uv[1]).rem_euclid(255.);
+
+                // TODO: Proper texture rendering
+                const IMG: &[u8; 786432] = include_bytes!("../../test/test_image.raw");
+                let texX = (texU*512.).floor().rem_euclid(512.) as usize;
+                let texY = (texV*-512.).floor().rem_euclid(512.) as usize;
+                let r = IMG[texX*3 + texY*512*3];
+                let g = IMG[texX*3 + texY*512*3 + 1];
+                let b = IMG[texX*3 + texY*512*3 + 2];
+
                 unsafe { (*pixel_pointer).rendered = ARGB4_to_ARGBu32(0xFF, r, g, b) };
                 return Some(intersection);
             } else {
@@ -68,5 +69,9 @@ impl Triangle {
         } else {
             return None;
         }
+    }
+
+    pub fn center(&self) -> Vec3 {
+        (self.vertices[0].pos + self.vertices[1].pos + self.vertices[2].pos)/3.
     }
 }
